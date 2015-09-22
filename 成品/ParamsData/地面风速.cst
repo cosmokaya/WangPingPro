@@ -1,0 +1,40 @@
+﻿<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--参数配置文件，请不要修改任何地方，否则程序可能无法启动！-->
+<等值线参数>
+  <搜索类型 value="2" />
+  <指定搜索数值>
+    <数值个数 value="0" />
+  </指定搜索数值>
+  <搜索条数 value="20" />
+  <基准线 value="0" />
+  <搜索步长 value="2" />
+  <最大值 value="5" />
+  <最小值 value="2" />
+  <使用指定最小值 value="True" />
+  <使用指定最大值 value="False" />
+  <线粗 value="1" />
+  <线型 value="4" />
+  <等值线颜色表 value="1" />
+  <等值线默认颜色 R="0" G="0" B="0" />
+  <显示等值线 value="True" />
+  <显示数值在等值线上 value="False" />
+  <显示单位在等值线上 value="False" />
+  <显示单位在色标上 value="True" />
+  <文字间隔 value="1" />
+  <文字大小 value="9" />
+  <文字加粗 value="False" />
+  <文字旋转 value="False" />
+  <文字与曲线同色 value="False" />
+  <样条插值 value="True" />
+  <伪彩色填充 value="True" />
+  <伪彩色填充类型 value="1" />
+  <伪彩色填充颜色表 value="1" />
+  <伪彩色填充透明度 value="190" />
+  <显示节点 value="False" />
+  <显示三角形 value="False" />
+  <显示箭头 value="False" />
+  <最小颜色号 value="19" />
+  <最大颜色号 value="195" />
+  <数值格式 value="0" />
+  <数值单位 value="m/s" />
+</等值线参数>

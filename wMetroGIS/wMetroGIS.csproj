@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <ProjectGuid>{AD4F7A95-B4A7-4889-A792-D8FE9BD1B14D}</ProjectGuid>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <OutputType>Library</OutputType>
+    <AssemblyName>wMetroGIS</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Platform)' == 'AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <OutputPath>bin\Debug\</OutputPath>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <OutputPath>bin\Release\</OutputPath>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
+    <OutputPath>..\成品\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System" />
+    <Reference Include="DevComponents.DotNetBar2">
+      <HintPath>D:\360云盘\Code\FreeProject\wp\成品\DevComponents.DotNetBar2.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Drawing" />
+    <Reference Include="ZedGraph">
+      <HintPath>D:\360云盘\Code\FreeProject\wp\成品\ZedGraph.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Data.OracleClient" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Core" />
+    <Reference Include="System" />
+    <Reference Include="System.Windows.Forms" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="wMetroGIS.Properties\Resources.cs" />
+    <Compile Include="wMetroGIS.wChartControl\BarChartControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wChartControl\BaseChartControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wChartControl\CurveControlBarControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wChartControl\MultiLineChartControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wChartControl\MultiVertLineChartControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wChartControl\TimeLineControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wChartControl\VertLineChartControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wColorManager\ColorItem.cs" />
+    <Compile Include="wMetroGIS.wColorManager\ColorManager.cs" />
+    <Compile Include="wMetroGIS.wColorManager\ColorTable.cs" />
+    <Compile Include="wMetroGIS.wContour\ContourManager.cs" />
+    <Compile Include="wMetroGIS.wContour\Edge.cs" />
+    <Compile Include="wMetroGIS.wContour\TriangleWithEdge.cs" />
+    <Compile Include="wMetroGIS.wCurve\Curve.cs" />
+    <Compile Include="wMetroGIS.wCurve\CurveManager.cs" />
+    <Compile Include="wMetroGIS.wCurve\CurveRelation.cs" />
+    <Compile Include="wMetroGIS.wCurve\CurveRelationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wCurve\TreeNodeCurve.cs" />
+    <Compile Include="wMetroGIS.wDataObject\GridDataObj.cs" />
+    <Compile Include="wMetroGIS.wDataObject\GridDataScalar.cs" />
+    <Compile Include="wMetroGIS.wDataObject\GridDataVector.cs" />
+    <Compile Include="wMetroGIS.wDataReader\DataReader.cs" />
+    <Compile Include="wMetroGIS.wDataReader\EncryptDataReader.cs" />
+    <Compile Include="wMetroGIS.wDataReader\LineDataReader.cs" />
+    <Compile Include="wMetroGIS.wDataReader\XMLDataReader.cs" />
+    <Compile Include="wMetroGIS.wDBConnecter\AccessConnect.cs" />
+    <Compile Include="wMetroGIS.wDBConnecter\OracleConnect.cs" />
+    <Compile Include="wMetroGIS.wDBConnecter\SQLConnect.cs" />
+    <Compile Include="wMetroGIS.wFunctionFormLib\AnimateShowForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wFunctionFormLib\LogoForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wFunctionFormLib\ProgressForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wFunctionFormLib\ProgressFormEx.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wFunctionFormLib\ShowMultiCurveForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wFunctionFormLib\ShowSingleCurveForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wLayers\wAreaLayer.cs" />
+    <Compile Include="wMetroGIS.wLayers\wBaseLayer.cs" />
+    <Compile Include="wMetroGIS.wLayers\wContourLayer.cs" />
+    <Compile Include="wMetroGIS.wLayers\wImageLayer.cs" />
+    <Compile Include="wMetroGIS.wLayers\wLayerManagerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wLayers\wMarkItem.cs" />
+    <Compile Include="wMetroGIS.wLayers\wMarkLayer.cs" />
+    <Compile Include="wMetroGIS.wLayers\wRegionLayer.cs" />
+    <Compile Include="wMetroGIS.wLayers\wStationItem.cs" />
+    <Compile Include="wMetroGIS.wLayers\wStationLayer.cs" />
+    <Compile Include="wMetroGIS.wLayers\wStationLayerSetupForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wLayers\wStreamlineLayer.cs" />
+    <Compile Include="wMetroGIS.wLayers\wVectorLayer.cs" />
+    <Compile Include="wMetroGIS.wMapMask\wBaseMasker.cs" />
+    <Compile Include="wMetroGIS.wMapMask\wChinaMasker.cs" />
+    <Compile Include="wMetroGIS.wMapMask\wUserDefineMasker.cs" />
+    <Compile Include="wMetroGIS.wMapMask\wWorldLandMasker.cs" />
+    <Compile Include="wMetroGIS.wMapMask\wWorldOceanMasker.cs" />
+    <Compile Include="wMetroGIS.wMapPictureBoxControl\AreaSelectEventArgs.cs" />
+    <Compile Include="wMetroGIS.wMapPictureBoxControl\StationSelectEventArgs.cs" />
+    <Compile Include="wMetroGIS.wMapPictureBoxControl\wMapPictureBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wMapPictureBoxControl\wMapThumbPictureBox.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wMapProjection\Projection.cs" />
+    <Compile Include="wMetroGIS.wMapProjection\ProjectionLambert.cs" />
+    <Compile Include="wMetroGIS.wMapProjection\ProjectionLinear.cs" />
+    <Compile Include="wMetroGIS.wMapProjection\ProjectionMercator.cs" />
+    <Compile Include="wMetroGIS.wMapProjection\ProjectionStereogram.cs" />
+    <Compile Include="wMetroGIS.wMathmatics\Mathmatics.cs" />
+    <Compile Include="wMetroGIS.wParams\BarChartParams.cs" />
+    <Compile Include="wMetroGIS.wParams\BarChartSettingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wParams\BaseParams.cs" />
+    <Compile Include="wMetroGIS.wParams\ContourParams.cs" />
+    <Compile Include="wMetroGIS.wParams\ContourSettingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wParams\DatabaseParams.cs" />
+    <Compile Include="wMetroGIS.wParams\DatabaseSettingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wParams\MapLine.cs" />
+    <Compile Include="wMetroGIS.wParams\MapParams.cs" />
+    <Compile Include="wMetroGIS.wParams\MapSettingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wParams\RegionParams.cs" />
+    <Compile Include="wMetroGIS.wParams\RegionSettingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wParams\StreamlineParams.cs" />
+    <Compile Include="wMetroGIS.wParams\StreamlineSettingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wParams\VectorParams.cs" />
+    <Compile Include="wMetroGIS.wParams\VectorSettingForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wParams\wParamsManagerControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wStreamline\Streamline.cs" />
+    <Compile Include="wMetroGIS.wTlnP\wTlnPControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wTlnP\wWindRoseControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="wMetroGIS.wTriangulation\Edge.cs" />
+    <Compile Include="wMetroGIS.wTriangulation\Triangle.cs" />
+    <Compile Include="wMetroGIS.wTriangulation\TriangleHasVertex.cs" />
+    <Compile Include="wMetroGIS.wTriangulation\TriangleIsCompleted.cs" />
+    <Compile Include="wMetroGIS.wTriangulation\Triangulation.cs" />
+    <Compile Include="wMetroGIS.wTriangulation\Vertex.cs" />
+    <Compile Include="wMetroGIS.wTriangulation\VertexIsInCircumCircle.cs" />
+    <Compile Include="wMetroGIS.wTriangulation\VertexManager.cs" />
+    <Compile Include="wMetroGIS.wTriangulation\VertexWithValue.cs" />
+    <Compile Include="wMetroGIS.wTriangulation\WorkNode.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="wMetroGIS.Properties\Resources.resources" />
+    <EmbeddedResource Include="wMetroGIS.wChartControl\BarChartControl.resources" />
+    <EmbeddedResource Include="wMetroGIS.wChartControl\CurveControlBarControl.resources" />
+    <EmbeddedResource Include="wMetroGIS.wChartControl\MultiLineChartControl.resources" />
+    <EmbeddedResource Include="wMetroGIS.wChartControl\MultiVertLineChartControl.resources" />
+    <EmbeddedResource Include="wMetroGIS.wChartControl\TimeLineControl.resources" />
+    <EmbeddedResource Include="wMetroGIS.wChartControl\VertLineChartControl.resources" />
+    <EmbeddedResource Include="wMetroGIS.wCurve\CurveRelationForm.resources" />
+    <EmbeddedResource Include="wMetroGIS.wFunctionFormLib\AnimateShowForm.resources" />
+    <EmbeddedResource Include="wMetroGIS.wFunctionFormLib\LogoForm.resources" />
+    <EmbeddedResource Include="wMetroGIS.wFunctionFormLib\ProgressForm.resources" />
+    <EmbeddedResource Include="wMetroGIS.wFunctionFormLib\ProgressFormEx.resources" />
+    <EmbeddedResource Include="wMetroGIS.wFunctionFormLib\ShowMultiCurveForm.resources" />
+    <EmbeddedResource Include="wMetroGIS.wFunctionFormLib\ShowSingleCurveForm.resources" />
+    <EmbeddedResource Include="wMetroGIS.wLayers\wLayerManagerControl.resources" />
+    <EmbeddedResource Include="wMetroGIS.wLayers\wStationLayerSetupForm.resources" />
+    <EmbeddedResource Include="wMetroGIS.wMapPictureBoxControl\wMapPictureBox.resources" />
+    <EmbeddedResource Include="wMetroGIS.wMapPictureBoxControl\wMapThumbPictureBox.resources" />
+    <EmbeddedResource Include="wMetroGIS.wParams\BarChartSettingForm.resources" />
+    <EmbeddedResource Include="wMetroGIS.wParams\ContourSettingForm.resources" />
+    <EmbeddedResource Include="wMetroGIS.wParams\DatabaseSettingForm.resources" />
+    <EmbeddedResource Include="wMetroGIS.wParams\MapSettingForm.resources" />
+    <EmbeddedResource Include="wMetroGIS.wParams\RegionSettingForm.resources" />
+    <EmbeddedResource Include="wMetroGIS.wParams\StreamlineSettingForm.resources" />
+    <EmbeddedResource Include="wMetroGIS.wParams\VectorSettingForm.resources" />
+    <EmbeddedResource Include="wMetroGIS.wParams\wParamsManagerControl.resources" />
+    <EmbeddedResource Include="wMetroGIS.wTlnP\wTlnPControl.resources" />
+    <EmbeddedResource Include="wMetroGIS.wTlnP\wWindRoseControl.resources" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
