@@ -76,7 +76,13 @@
     <Compile Include="MainForm.Path.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Read.cs">
+    <Compile Include="MainForm.Params.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.ReadMM5.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MainForm.ReadPotential.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Program.cs" />

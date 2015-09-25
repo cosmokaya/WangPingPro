@@ -25,147 +25,19 @@ namespace SCWPredictSystem
         private const double DefaultValue = -9999;
         private const int RowNum = 272;
         private const int ColNum = 302;
-        private long BlockSizeS = RowNum * ColNum * 4;
+        private long BlockSizeS = RowNum * ColNum * 4; //4个字节，float
         private long BlockSizeB = RowNum * ColNum * 4 * 156;
-        ////
-        //private int[] mm5_factor_level = new int[] { 1, 1, 1, 1, 1, 21, 21, 21, 21, 21, 1, 21, 21, 1, 1, 1 };
-        ////
-        //private int[] mm5_factor_pos = new int[] { 0, 1, 2, 3, 4, 5, 26, 47, 68, 89, 110, 111, 132, 153, 154, 155 };
-        //
-        private int[] mm5_factor_level = new int[] { 21, 21, 1, 1, 1, 1, 1, 21, 21, 21, 21, 21, 1, 1, 1, 1 };
-        //
-        private int[] mm5_factor_pos = new int[] { 0, 21, 42, 43, 44, 45, 46, 67, 88, 109, 130, 151, 152, 153, 154, 155 };
-        //
-        private double[] mm5_level = new double[] { 1000, 975, 950, 925, 900, 850, 800, 750, 700, 650, 600, 550, 500, 450, 400, 350, 300, 250, 200, 150, 100 };
 
-        //private enum MM5_FACTOR //16
-        //{
-        //    T2 = 0,    //   1      0  TEMP at 2 M (K)
-        //    RAINC,     //   1      1  ACCUMULATED TOTAL CUMULUS PRECIPITATION (mm)
-        //    RAINNC,    //   1      2  ACCUMULATED TOTAL GRID SCALE PRECIPITATION (mm)
-        //    XLAT,      //   1      3  LATITUDE, SOUTH IS NEGATIVE (degree_north)
-        //    XLONG,     //   1      4  LONGITUDE, WEST IS NEGATIVE (degree_east)
-        //    geopt,     //  21      5  Geopotential (m2/s2)
-        //    height,    //  21     26  Model height (km)
-        //    tc,        //  21     47  Temperature (C)
-        //    td,        //  21     68  Dewpoint Temperature (C)
-        //    rh,        //  21     89  Relative Humidity (%)
-        //    rh2,       //   1    110  Relative Humidity at 2m (%)
-        //    umet,      //  21    111  Rotated wind component (m s-1)
-        //    vmet,      //  21    132  Rotated wind component (m s-1)
-        //    u10m,      //   1    153  Rotated wind component (m s-1)
-        //    v10m,      //   1    154  Rotated wind component (m s-1) 
-        //    slp        //   1    155  Sea Levelp Pressure (hPa)
-        //}
-
-        private enum MM5_FACTOR //16
-        {
-            U,
-            V,
-            T2,//   1      0  TEMP at 2 M (K)
-            RAINC,     //   1      1  ACCUMULATED TOTAL CUMULUS PRECIPITATION (mm)
-            RAINNC,    //   1      2  ACCUMULATED TOTAL GRID SCALE PRECIPITATION (mm)
-            XLAT,      //   1      3  LATITUDE, SOUTH IS NEGATIVE (degree_north)
-            XLONG,     //   1      4  LONGITUDE, WEST IS NEGATIVE (degree_east)
-            pressure,    //  21     26  Model height (km)
-            height,
-            tc,        //  21     47  Temperature (C)
-            td,        //  21     68  Dewpoint Temperature (C)
-            rh,        //  21     89  Relative Humidity (%)
-            rh2,       //   1    110  Relative Humidity at 2m (%)
-            u10m,      //   1    153  Rotated wind component (m s-1)
-            v10m,      //   1    154  Rotated wind component (m s-1) 
-            slp        //   1    155  Sea Levelp Pressure (hPa)
-        }
-
-        private enum MM5_LEVEL //21
-        {
-            GK1000HPA,
-            GK975HPA,
-            GK950HPA,
-            GK925HPA,
-            GK900HPA,
-            GK850HPA,
-            GK800HPA,
-            GK750HPA,
-            GK700HPA,
-            GK650HPA,
-            GK600HPA,
-            GK550HPA,
-            GK500HPA,
-            GK450HPA,
-            GK400HPA,
-            GK350HPA,
-            GK300HPA,
-            GK250HPA,
-            GK200HPA,
-            GK150HPA,
-            GK100HPA
-        }
-        private enum MM5_HOUR
-        {
-            HR00 = 0,
-            HR06,
-            HR12,
-            HR18,
-            HR24,
-            HR30,
-            HR36,
-            HR42,
-            HR48,
-            HR54,
-            HR60,
-            HR66,
-            HR72
-        }
         //保存每个点的经度纬度
         private double[] m_Longitude = new double[RowNum * ColNum];
         private double[] m_Latitude = new double[RowNum * ColNum];
-
-        //潜势
-        private enum POTENTIAL_FACTOR
-        {
-            LEIBAO_SINGLE_INDEX = 0,
-            LEIBAO_MULTI_INDEX,
-            LEIBAO_CONDITION_INDEX,
-            DAFENG_SINGLE_INDEX,
-            DAFENG_MULTI_INDEX,
-            DAFENG_CONDITION_INDEX,
-            BINBAO_SINGLE_INDEX,
-            BINBAO_MULTI_INDEX,
-            BINBAO_CONDITION_INDEX
-        }
-        private enum POTENTIAL_HOUR
-        {
-            HR06 = 0,
-            HR12,
-            HR18,
-            HR24,
-            HR30,
-            HR36,
-            HR42,
-            HR48,
-            HR54,
-            HR60,
-            HR66,
-            HR72
-        }
-        private string[] potential_name = { "CAPE", "CIN", "LI", "SI", "SSI", "BRN", "BRNSHR", "AI", "KI", "SWEAT", "FF75", "FF52" };
+        //private double[,] cords=new double[RowNum,ColNum];
 
         public MainForm()
         {
             InitializeComponent();
+            ReadCoordinate();
 
-            //从文件读取经纬度
-            FileStream fs = new FileStream(Application.StartupPath + "\\AppData\\GridPosition.dat", FileMode.Open, FileAccess.Read);
-            BinaryReader br = new BinaryReader(fs);
-            for (int i = 0; i < m_Longitude.Length; i++)
-            {
-                m_Longitude[i] = br.ReadDouble();
-                m_Latitude[i] = br.ReadDouble();
-            }
-            br.Close();
-            fs.Close();
 
         }
 
@@ -303,158 +175,16 @@ namespace SCWPredictSystem
             //DataTable dt = ReadPotentialData(DateTime.Now, POTENTIAL_FACTOR.BENBAO_CONDITION_INDEX, POTENTIAL_HOUR.HR72);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="dataPathName"></param>
-        /// <param name="factor"></param>
-        /// <param name="level"></param>
-        /// <param name="time"></param>
-        /// <returns></returns>
-        private double[] ReadMM5Data(string dataPathName, MM5_FACTOR factor, MM5_LEVEL level = MM5_LEVEL.GK1000HPA, MM5_HOUR time = MM5_HOUR.HR00)
-        {
-            FileStream fs = null;
-            BinaryReader br = null;
-            try
-            {
-                //打开文件
-                fs = new FileStream(dataPathName, FileMode.Open, FileAccess.Read);
-                br = new BinaryReader(fs, Encoding.BigEndianUnicode);
-                //计算数据存放位置
-                long posD = BlockSizeB * (int)time + BlockSizeS * mm5_factor_pos[(int)factor];
-                if (mm5_factor_level[(int)factor] != 1)
-                    posD += BlockSizeS * (int)level;
-                //读取数据
-                fs.Seek(posD, SeekOrigin.Begin);
-                double[] dataD = DataReader.ReadBigEndianFloatBlockToDouble(br, RowNum, ColNum);
-                br.Close();
-                fs.Close();
-                //整理数据
-                RegularMM5Data(dataD, factor);
-                return dataD;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            if (br != null)
-                br.Close();
-            if (fs != null)
-                fs.Close();
-            return null;
-        }
-
-        private void RegularMM5Data(double[] data, MM5_FACTOR factor)
-        {
-            for (int i = 0; i < data.Length; i++)
-            {
-                if (data[i] > 99999)
-                    data[i] = DefaultValue;
-            }
-            if (factor == MM5_FACTOR.T2)
-            {
-                for (int i = 0; i < data.Length; i++)
-                {
-                    if (data[i] != DefaultValue)
-                        data[i] -= Mathmatics.AbsoluteZero;
-                }
-            }
-            else if (factor == MM5_FACTOR.height)
-            {
-                for (int i = 0; i < data.Length; i++)
-                {
-                    if (data[i] != DefaultValue)
-                        data[i] = data[i] * 100;
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// 获取12个指数的DataTable
-        /// </summary>
-        /// <param name="datetime"></param>
-        /// <param name="factor"></param>
-        /// <param name="hour"></param>
-        /// <returns></returns>
-        private DataTable ReadPotentialData(DateTime datetime, POTENTIAL_FACTOR factor, POTENTIAL_HOUR hour)
-        {
-            string dataPathName = GetPotentialFilePath(datetime, factor); //@"D:\S各种项目\W王平项目\系统\数据\强对流数据\wrf-17zhan-2015072100-lbdf-danzhishu-gailv.DAT";
-            int stationNum = 17;
-            FileStream fs = null;
-            StreamReader br = null;
-            try
-            {
-                DataTable dtResult = new DataTable("POTENTIAL");
-
-                dtResult.Columns.Add("StationID", typeof(int));
-                for (int i = 0; i < potential_name.Length; i++)
-                    dtResult.Columns.Add(potential_name[i], typeof(double));
-                //打开文件
-                fs = new FileStream(dataPathName, FileMode.Open, FileAccess.Read);
-                br = new StreamReader(fs, Encoding.Default);
-                int n = stationNum * (int)hour;
-                for (int i = 1; i <= n; i++)
-                    br.ReadLine();
-                for (int i = 1; i <= stationNum; i++)
-                {
-                    string[] lineData = DataReader.String2StringData(br.ReadLine());
-                    //if (lineData.Length != 23)
-                    //    continue;
-                    dtResult.Rows.Add(Convert.ToInt32(lineData[2]),
-
-                                      Convert.ToDouble(lineData[15]),
-                                      Convert.ToDouble(lineData[16]),
-                                      Convert.ToDouble(lineData[17]),
-                                      Convert.ToDouble(lineData[18]),
-                                      Convert.ToDouble(lineData[19]),
-                                      Convert.ToDouble(lineData[20]),
-                                      Convert.ToDouble(lineData[21]),
-                                      Convert.ToDouble(lineData[22]),
-                                      Convert.ToDouble(lineData[23]),
-                                      Convert.ToDouble(lineData[24]));
-                }
-                br.Close();
-                fs.Close();
-                return dtResult;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message, "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            if (br != null)
-                br.Close();
-            if (fs != null)
-                fs.Close();
-            return null;
-        }
-
-        private double[] ReadPotentialData(DateTime datetime, POTENTIAL_FACTOR factor, POTENTIAL_HOUR hour, int stationID)
-        {
-            DataTable dtResult = ReadPotentialData(datetime, factor, hour);
-            if (dtResult == null || dtResult.Rows.Count == 0)
-                return null;
-            for (int i = 0; i < dtResult.Rows.Count; i++)
-            {
-                if (stationID == (int)dtResult.Rows[i]["StationID"])
-                {
-                    double[] result = new double[10];
-                    for (int j = 0; j < 10; j++)
-                        result[j] = (double)dtResult.Rows[i][j + 1];
-                    return result;
-                }
-            }
-            return null;
-        }
-
 
         /// <summary>
         /// 显示MM5数据
         /// </summary>
         private void ShowMM5Data()
         {
+            this.Cursor = Cursors.WaitCursor;
             wLayerManagerControl1.ClearLayers();
             string dataPathName = GetMM5FilePath(controlDateTimePickerMM5.selectedDateTime);
+
             MM5_LEVEL level = MM5_LEVEL.GK925HPA;
             switch (listBoxLevelMM5.SelectedIndex)
             {
@@ -520,6 +250,8 @@ namespace SCWPredictSystem
                 }
                 factorDataU = ReadMM5Data(dataPathName, MM5_FACTOR.u10m, level, time);
                 factorDataV = ReadMM5Data(dataPathName, MM5_FACTOR.v10m, level, time);
+                //factorDataU = ReadMM5Data(dataPathName, MM5_FACTOR.U, level, time);
+                //factorDataV = ReadMM5Data(dataPathName, MM5_FACTOR.V, level, time);
                 contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\地面降水量.cst");
                 vectorParams = new VectorParams(Application.StartupPath + "\\ParamsData\\地面风向.vst");
                 layerTitleD = "地面降水量";
@@ -547,8 +279,8 @@ namespace SCWPredictSystem
                 contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\等压面相对湿度.cst");
                 //factorDataU = ReadMM5Data(dataPathName, MM5_FACTOR.umet, MM5_LEVEL.GK700HPA, time);
                 //factorDataV = ReadMM5Data(dataPathName, MM5_FACTOR.vmet, MM5_LEVEL.GK700HPA, time);
-                factorDataU = ReadMM5Data(dataPathName, MM5_FACTOR.U, MM5_LEVEL.GK500HPA, time);
-                factorDataV = ReadMM5Data(dataPathName, MM5_FACTOR.V, MM5_LEVEL.GK500HPA, time);
+                factorDataU = ReadMM5Data(dataPathName, MM5_FACTOR.U, MM5_LEVEL.GK700HPA, time);
+                factorDataV = ReadMM5Data(dataPathName, MM5_FACTOR.V, MM5_LEVEL.GK700HPA, time);
                 vectorParams = new VectorParams(Application.StartupPath + "\\ParamsData\\等压面风向.vst");
                 layerTitleD = "700百帕相对湿度";
                 layerTitleUV = "700百帕风向";
@@ -561,8 +293,8 @@ namespace SCWPredictSystem
                 contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\等压面相对湿度.cst");
                 //factorDataU = ReadMM5Data(dataPathName, MM5_FACTOR.umet, MM5_LEVEL.GK850HPA, time);
                 //factorDataV = ReadMM5Data(dataPathName, MM5_FACTOR.vmet, MM5_LEVEL.GK850HPA, time);
-                factorDataU = ReadMM5Data(dataPathName, MM5_FACTOR.U, MM5_LEVEL.GK500HPA, time);
-                factorDataV = ReadMM5Data(dataPathName, MM5_FACTOR.V, MM5_LEVEL.GK500HPA, time);
+                factorDataU = ReadMM5Data(dataPathName, MM5_FACTOR.U, MM5_LEVEL.GK850HPA, time);
+                factorDataV = ReadMM5Data(dataPathName, MM5_FACTOR.V, MM5_LEVEL.GK850HPA, time);
                 vectorParams = new VectorParams(Application.StartupPath + "\\ParamsData\\等压面风向.vst");
                 layerTitleD = "850百帕相对湿度";
                 layerTitleUV = "850百帕风向";
@@ -589,8 +321,8 @@ namespace SCWPredictSystem
                 contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\等压面位势高度.cst");
                 //factorDataU = ReadMM5Data(dataPathName, MM5_FACTOR.umet, MM5_LEVEL.GK700HPA, time);
                 //factorDataV = ReadMM5Data(dataPathName, MM5_FACTOR.vmet, MM5_LEVEL.GK700HPA, time);
-                factorDataU = ReadMM5Data(dataPathName, MM5_FACTOR.U, MM5_LEVEL.GK500HPA, time);
-                factorDataV = ReadMM5Data(dataPathName, MM5_FACTOR.V, MM5_LEVEL.GK500HPA, time);
+                factorDataU = ReadMM5Data(dataPathName, MM5_FACTOR.U, MM5_LEVEL.GK700HPA, time);
+                factorDataV = ReadMM5Data(dataPathName, MM5_FACTOR.V, MM5_LEVEL.GK700HPA, time);
                 vectorParams = new VectorParams(Application.StartupPath + "\\ParamsData\\等压面风向.vst");
                 layerTitleD = "500百帕位势高度";
                 layerTitleUV = "700百帕风向";
@@ -603,8 +335,8 @@ namespace SCWPredictSystem
                 contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\等压面位势高度.cst");
                 //factorDataU = ReadMM5Data(dataPathName, MM5_FACTOR.umet, MM5_LEVEL.GK850HPA, time);
                 //factorDataV = ReadMM5Data(dataPathName, MM5_FACTOR.vmet, MM5_LEVEL.GK850HPA, time);
-                factorDataU = ReadMM5Data(dataPathName, MM5_FACTOR.U, MM5_LEVEL.GK500HPA, time);
-                factorDataV = ReadMM5Data(dataPathName, MM5_FACTOR.V, MM5_LEVEL.GK500HPA, time);
+                factorDataU = ReadMM5Data(dataPathName, MM5_FACTOR.U, MM5_LEVEL.GK850HPA, time);
+                factorDataV = ReadMM5Data(dataPathName, MM5_FACTOR.V, MM5_LEVEL.GK850HPA, time);
                 vectorParams = new VectorParams(Application.StartupPath + "\\ParamsData\\等压面风向.vst");
                 layerTitleD = "500百帕位势高度";
                 layerTitleUV = "850百帕风向";
@@ -658,7 +390,7 @@ namespace SCWPredictSystem
                 contourColorBarName = "降水量等值线颜色表";
                 vectorColorBarName = "";
             }
-            else if (listBoxFactorMM5.SelectedIndex == 12)
+            else if (listBoxFactorMM5.SelectedIndex == 12)//从这个下面都是有level的
             {
                 factorDataD = ReadMM5Data(dataPathName, MM5_FACTOR.height, level, time);
                 contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\等压面位势高度.cst");
@@ -667,6 +399,7 @@ namespace SCWPredictSystem
             }
             else if (listBoxFactorMM5.SelectedIndex == 13)
             {
+                //todo：这个貌似有问题
                 factorDataD = ReadMM5Data(dataPathName, MM5_FACTOR.tc, level, time);
                 contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\等压面温度.cst");
                 contourColorBarName = "温度等值线颜色表";
@@ -703,6 +436,7 @@ namespace SCWPredictSystem
             {
                 return;
             }
+
             int jump = 10;
             List<PointF> listPosD = null;
             List<float> listValD = null;
@@ -776,6 +510,8 @@ namespace SCWPredictSystem
                 }
             }
             wMapPictureBox1.MapTitle = mapTitle;
+
+            this.Cursor = Cursors.Default;
         }
 
         /// <summary>
@@ -783,6 +519,7 @@ namespace SCWPredictSystem
         /// </summary>
         private void ShowAreaData()
         {
+            this.Cursor = Cursors.WaitCursor;
             string factorName = listBoxFactorArea.SelectedItem.ToString();
             POTENTIAL_HOUR hour = (POTENTIAL_HOUR)listBoxHourArea.SelectedIndex;
             string hourName = listBoxHourArea.SelectedItem.ToString();
@@ -874,6 +611,8 @@ namespace SCWPredictSystem
                 wLayerManagerControl2.AddLayer(contourLayer, masker, 0);
             }
             wMapPictureBox2.MapTitle = mapTitle;
+
+            this.Cursor = Cursors.Default;
         }
 
         /// <summary>
@@ -881,13 +620,30 @@ namespace SCWPredictSystem
         /// </summary>
         private void ShowTlnPData()
         {
+            this.Cursor = Cursors.WaitCursor;
+            int stationID = wMapPictureBox2.m_StationIDList1[(int)treeViewStation.SelectedNode.Index];
+            //12个指数
+            POTENTIAL_HOUR hour = (POTENTIAL_HOUR)listBoxHourStation.SelectedIndex;
+            double[] dt12Index = Read12IndexData(controlDateTimePickerStation.selectedDateTime, stationID, hour);
+            for (int i = 0; i < m_listViewIndex.Items.Count; i++)
+            {
+                m_listViewIndex.Items[i].SubItems[1].Text = string.Format("{0:0.000}", dt12Index[i]);
+            }
+            //3个分类的2个参数
+            m_listViewParas.Items[0].SubItems[1].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.BINBAO_MULTI_INDEX));
+            m_listViewParas.Items[0].SubItems[2].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.BINBAO_CONDITION_INDEX));
+            m_listViewParas.Items[1].SubItems[1].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.DAFENG_MULTI_INDEX));
+            m_listViewParas.Items[1].SubItems[2].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.DAFENG_CONDITION_INDEX));
+            m_listViewParas.Items[2].SubItems[1].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.LEIBAO_MULTI_INDEX));
+            m_listViewParas.Items[2].SubItems[2].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.LEIBAO_CONDITION_INDEX));
+
             if (treeViewStation.SelectedNode == null || treeViewStation.SelectedNode.Name != "STATION")
             {
                 return;
             }
             if (listBoxHourStation.SelectedIndex < 0)
                 return;
-            int stationID = wMapPictureBox2.m_StationIDList1[(int)treeViewStation.SelectedNode.Index];
+
             string dataPathName = GetMM5FilePath(controlDateTimePickerStation.selectedDateTime);
             string stationName = treeViewStation.SelectedNode.Text;
             int dataIndex = (int)treeViewStation.SelectedNode.Tag;
@@ -944,111 +700,11 @@ namespace SCWPredictSystem
             wTlnPControl1.DrawData();
 
             //todo:风玫瑰图，还是应该添加上去,有bug
-            //wWindRoseControl1.LoadData(P, Fs, Fx);
-            //wWindRoseControl1.PicTitle = roseTitle;
-            //wWindRoseControl1.DrawData();
+            wWindRoseControl1.LoadData(P, Fs, Fx);
+            wWindRoseControl1.PicTitle = roseTitle;
+            wWindRoseControl1.DrawData();
 
-            //12个指数
-            POTENTIAL_HOUR hour = (POTENTIAL_HOUR)listBoxHourStation.SelectedIndex;
-            double[] dt12Index = Read12IndexData(controlDateTimePickerStation.selectedDateTime, stationID, hour);
-            for (int i = 0; i < m_listViewIndex.Items.Count; i++)
-            {
-                m_listViewIndex.Items[i].SubItems[1].Text = string.Format("{0:0.000}", dt12Index[i]);
-            }
-            //3个分类的2个参数
-            m_listViewParas.Items[0].SubItems[1].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.BINBAO_MULTI_INDEX));
-            m_listViewParas.Items[0].SubItems[2].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.BINBAO_CONDITION_INDEX));
-            m_listViewParas.Items[1].SubItems[1].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.DAFENG_MULTI_INDEX));
-            m_listViewParas.Items[1].SubItems[2].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.DAFENG_CONDITION_INDEX));
-            m_listViewParas.Items[2].SubItems[1].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.LEIBAO_MULTI_INDEX));
-            m_listViewParas.Items[2].SubItems[2].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.LEIBAO_CONDITION_INDEX));
-
-
-            //POTENTIAL_HOUR hour = (POTENTIAL_HOUR)listBoxHourStation.SelectedIndex;
-            //double[] potentialSingle = ReadPotentialData(controlDateTimePickerStation.selectedDateTime,
-            //                                             POTENTIAL_FACTOR.LEIBAO_SINGLE_INDEX,
-            //                                             hour,
-            //                                             stationID);
-            //double[] potentialMulti = ReadPotentialData(controlDateTimePickerStation.selectedDateTime,
-            //                                            POTENTIAL_FACTOR.LEIBAO_MULTI_INDEX,
-            //                                            hour,
-            //                                            stationID);
-            //double[] potentialCondition = ReadPotentialData(controlDateTimePickerStation.selectedDateTime,
-            //                                                POTENTIAL_FACTOR.LEIBAO_CONDITION_INDEX,
-            //                                                hour,
-            //                                                stationID);
-            //for (int i = 0; i < listViewPotentialLeiBao.Items.Count; i++)
-            //{
-            //    if (potentialSingle != null)
-            //        listViewPotentialLeiBao.Items[i].SubItems[1].Text = string.Format("{0:0.000}", potentialSingle[i]);
-            //    else
-            //        listViewPotentialLeiBao.Items[i].SubItems[1].Text = "-";
-            //    if (potentialMulti != null)
-            //        listViewPotentialLeiBao.Items[i].SubItems[2].Text = string.Format("{0:0.000}", potentialMulti[i]);
-            //    else
-            //        listViewPotentialLeiBao.Items[i].SubItems[2].Text = "-";
-            //    if (potentialCondition != null)
-            //        listViewPotentialLeiBao.Items[i].SubItems[3].Text = string.Format("{0:0.000}", potentialCondition[i]);
-            //    else
-            //        listViewPotentialLeiBao.Items[i].SubItems[3].Text = "-";
-            //}
-            ////雷暴大风
-            //potentialSingle = ReadPotentialData(controlDateTimePickerStation.selectedDateTime,
-            //                                    POTENTIAL_FACTOR.DAFENG_SINGLE_INDEX,
-            //                                    hour,
-            //                                    stationID);
-            //potentialMulti = ReadPotentialData(controlDateTimePickerStation.selectedDateTime,
-            //                                   POTENTIAL_FACTOR.DAFENG_MULTI_INDEX,
-            //                                   hour,
-            //                                   stationID);
-            //potentialCondition = ReadPotentialData(controlDateTimePickerStation.selectedDateTime,
-            //                                       POTENTIAL_FACTOR.DAFENG_CONDITION_INDEX,
-            //                                       hour,
-            //                                       stationID);
-            //for (int i = 0; i < listViewPotentialDaFeng.Items.Count; i++)
-            //{
-            //    if (potentialSingle != null)
-            //        listViewPotentialDaFeng.Items[i].SubItems[1].Text = string.Format("{0:0.000}", potentialSingle[i]);
-            //    else
-            //        listViewPotentialDaFeng.Items[i].SubItems[1].Text = "-";
-            //    if (potentialMulti != null)
-            //        listViewPotentialDaFeng.Items[i].SubItems[2].Text = string.Format("{0:0.000}", potentialMulti[i]);
-            //    else
-            //        listViewPotentialDaFeng.Items[i].SubItems[2].Text = "-";
-            //    if (potentialCondition != null)
-            //        listViewPotentialDaFeng.Items[i].SubItems[3].Text = string.Format("{0:0.000}", potentialCondition[i]);
-            //    else
-            //        listViewPotentialDaFeng.Items[i].SubItems[3].Text = "-";
-            //}
-            ////冰雹
-            ////雷暴大风
-            //potentialSingle = ReadPotentialData(controlDateTimePickerStation.selectedDateTime,
-            //                                    POTENTIAL_FACTOR.BINBAO_SINGLE_INDEX,
-            //                                    hour,
-            //                                    stationID);
-            //potentialMulti = ReadPotentialData(controlDateTimePickerStation.selectedDateTime,
-            //                                   POTENTIAL_FACTOR.BINBAO_MULTI_INDEX,
-            //                                   hour,
-            //                                   stationID);
-            //potentialCondition = ReadPotentialData(controlDateTimePickerStation.selectedDateTime,
-            //                                       POTENTIAL_FACTOR.BINBAO_CONDITION_INDEX,
-            //                                       hour,
-            //                                       stationID);
-            //for (int i = 0; i < listViewPotentialBinBao.Items.Count; i++)
-            //{
-            //    if (potentialSingle != null)
-            //        listViewPotentialBinBao.Items[i].SubItems[1].Text = string.Format("{0:0.000}", potentialSingle[i]);
-            //    else
-            //        listViewPotentialBinBao.Items[i].SubItems[1].Text = "-";
-            //    if (potentialMulti != null)
-            //        listViewPotentialBinBao.Items[i].SubItems[2].Text = string.Format("{0:0.000}", potentialMulti[i]);
-            //    else
-            //        listViewPotentialBinBao.Items[i].SubItems[2].Text = "-";
-            //    if (potentialCondition != null)
-            //        listViewPotentialBinBao.Items[i].SubItems[3].Text = string.Format("{0:0.000}", potentialCondition[i]);
-            //    else
-            //        listViewPotentialBinBao.Items[i].SubItems[3].Text = "-";
-            //}
+            this.Cursor = Cursors.Default;
         }
 
         /// <summary>

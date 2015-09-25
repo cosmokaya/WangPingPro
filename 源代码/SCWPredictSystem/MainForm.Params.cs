@@ -62,7 +62,14 @@ namespace SCWPredictSystem
             return null;
         }
 
-
+        /// <summary>
+        /// 获取制定的某个参数
+        /// </summary>
+        /// <param name="datetime"></param>
+        /// <param name="stationID"></param>
+        /// <param name="hour"></param>
+        /// <param name="factor"></param>
+        /// <returns></returns>
         private double ReadPotentialParas(DateTime datetime, int stationID, POTENTIAL_HOUR hour, POTENTIAL_FACTOR factor)
         {
             double result = 0;
@@ -99,6 +106,24 @@ namespace SCWPredictSystem
             if (fs != null)
                 fs.Close();
             return 0;
+        }
+
+
+        /// <summary>
+        /// 读取经纬度信息
+        /// </summary>
+        public void ReadCoordinate()
+        {
+            //从文件读取经纬度
+            FileStream fs = new FileStream(Application.StartupPath + "\\AppData\\GridPosition.dat", FileMode.Open, FileAccess.Read);
+            BinaryReader br = new BinaryReader(fs);
+            for (int i = 0; i < m_Longitude.Length; i++)
+            {
+                m_Longitude[i] = br.ReadDouble();
+                m_Latitude[i] = br.ReadDouble();
+            }
+            br.Close();
+            fs.Close();
         }
     }
 }
