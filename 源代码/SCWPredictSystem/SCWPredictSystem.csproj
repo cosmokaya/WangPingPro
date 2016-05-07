@@ -96,7 +96,6 @@
     <Compile Include="controlDateTimePicker.Designer.cs">
       <DependentUpon>controlDateTimePicker.cs</DependentUpon>
     </Compile>
-    <Compile Include="IDW.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -117,7 +116,6 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Stations.cs" />
     <EmbeddedResource Include="controlDateTimePicker.resx">
       <DependentUpon>controlDateTimePicker.cs</DependentUpon>
     </EmbeddedResource>
@@ -144,7 +142,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="SCWPredictSystem_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\MailMergeGoToNextRecord.png" />
