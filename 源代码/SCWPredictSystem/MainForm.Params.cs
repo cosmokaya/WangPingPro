@@ -12,19 +12,19 @@ namespace SCWPredictSystem
     public partial class MainForm
     {
         /// <summary>
-        /// 获取12个指数的DataTable
+        /// 获取14个指数的DataTable
         /// </summary>
         /// <param name="datetime"></param>
         /// <param name="factor"></param>
         /// <param name="hour"></param>
         /// <returns></returns>
-        private double[] Read12IndexData(DateTime datetime, int stationID, POTENTIAL_HOUR hour)
+        private double[] Read14IndexData(DateTime datetime, int stationID, POTENTIAL_HOUR hour)
         {
-            string dataPathName = Get12IndexPath(datetime); //@"D:\S各种项目\W王平项目\系统\数据\强对流数据\wrf-17zhan-2015072100-lbdf-danzhishu-gailv.DAT";
+            string dataPathName = Get14IndexPath(datetime); //@"D:\S各种项目\W王平项目\系统\数据\强对流数据\wrf-17zhan-2015072100-lbdf-danzhishu-gailv.DAT";
             int stationNum = 17;
             FileStream fs = null;
             StreamReader br = null;
-            double[] result = new double[12];
+            double[] result = new double[14];
             try
             {
                 //打开文件
@@ -38,7 +38,7 @@ namespace SCWPredictSystem
                     string[] lineData = DataReader.String2StringData(br.ReadLine());
                     if (stationID == Convert.ToInt32(lineData[2]))
                     {
-                        for (int j = 0; j < 12; j++)
+                        for (int j = 0; j < 14; j++)
                         {
                             if (lineData.Length > 3 + j)//防止边界溢出
                             {
@@ -63,14 +63,14 @@ namespace SCWPredictSystem
         }
 
         /// <summary>
-        /// 获取制定的某个参数
+        /// 获取指定的某个参数
         /// </summary>
         /// <param name="datetime"></param>
         /// <param name="stationID"></param>
         /// <param name="hour"></param>
         /// <param name="factor"></param>
         /// <returns></returns>
-        private double ReadPotentialParas(DateTime datetime, int stationID, POTENTIAL_HOUR hour, POTENTIAL_FACTOR factor)
+        private double ReadPotentialPara(DateTime datetime, int stationID, POTENTIAL_HOUR hour, POTENTIAL_FACTOR factor)
         {
             double result = 0;
             string dataPathName = GetPotentialFilePath(datetime, factor);

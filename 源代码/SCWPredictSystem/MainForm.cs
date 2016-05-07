@@ -33,19 +33,23 @@ namespace SCWPredictSystem
         private double[] m_Latitude = new double[RowNum * ColNum];
         //private double[,] cords=new double[RowNum,ColNum];
 
+        double m_startX = 93.94719;
+        double m_startY = 18.07956;
+        double m_interval = 0.04504504;
+
         public MainForm()
         {
             InitializeComponent();
             ReadCoordinate();
-
-
         }
+
 
         private void MainForm_Load(object sender, EventArgs e)
         {
             //激活地图控件并开始绘图（这几句的顺序不能打乱）
             MapParams mapParams1 = new MapParams(Application.StartupPath + "\\ParamsData\\东南沿海地图.mst");
             MapParams mapParams2 = new MapParams(Application.StartupPath + "\\ParamsData\\南京战区地图.mst");
+            MapParams mapParams3 = new MapParams(Application.StartupPath + "\\ParamsData\\东南沿海地图.mst");
             //wMapPictureBox1.SetThumbPictureBoxControl(wMapThumbPictureBox1);
             wMapPictureBox1.InitializeMapControl(mapParams1);
             wMapPictureBox1.DrawMap();
@@ -53,6 +57,9 @@ namespace SCWPredictSystem
             wMapPictureBox2.InitializeMapControl(mapParams2);
             wMapPictureBox2.DrawMap();
             wMapPictureBox2.ThumbPictureBox.InitializeThumbMapControl();
+            wMapPictureBox3.InitializeMapControl(mapParams3);
+            wMapPictureBox3.DrawMap();
+            wMapPictureBox3.ThumbPictureBox.InitializeThumbMapControl();
             //设置地图控制
             wMapPictureBox1.MouseStatus = wMapPictureBox.MOUSE_STATUS.MOUSE_STATUS_SCRACH;
             wMapPictureBox1.ShowColorBar = false;
@@ -86,9 +93,26 @@ namespace SCWPredictSystem
             wMapPictureBox2.ShowToolStripButtonShowStation = true;
             wMapPictureBox2.ShowToolStripButtonShowColorBar = true;
             wMapPictureBox2.ShowToolStripButtonShowTitle = true;
+            wMapPictureBox3.MouseStatus = wMapPictureBox.MOUSE_STATUS.MOUSE_STATUS_SCRACH;
+            wMapPictureBox3.ShowColorBar = false;
+            wMapPictureBox3.ShowMapTitle = false;
+            wMapPictureBox3.ShowMousePosition = true;
+            wMapPictureBox3.ShowToolStripButtonMouseNormal = false;
+            wMapPictureBox3.ShowToolStripButtonMouseScrach = true;
+            wMapPictureBox3.ShowToolStripButtonMouseSelectArea = false;
+            wMapPictureBox3.ShowToolStripButtonMouseSelectPoint = true;
+            wMapPictureBox3.ShowToolStripButtonZoom = true;
+            wMapPictureBox3.ShowToolStripButtonAutoZoom = true;
+            wMapPictureBox3.ShowToolStripButtonRefresh = true;
+            wMapPictureBox3.ShowToolStripButtonSavePicture = true;
+            wMapPictureBox3.ShowToolStripButtonSetParams = true;
+            wMapPictureBox3.ShowToolStripButtonShowStation = true;
+            wMapPictureBox3.ShowToolStripButtonShowColorBar = true;
+            wMapPictureBox3.ShowToolStripButtonShowTitle = true;
             //设置图层管理器
             wLayerManagerControl1.SetDrawingMapControl(wMapPictureBox1);
             wLayerManagerControl2.SetDrawingMapControl(wMapPictureBox2);
+            wLayerManagerControl3.SetDrawingMapControl(wMapPictureBox3);
             //设置站点
             treeViewStation.Nodes[0].Nodes.Clear();
             for (int i = 0; i < wMapPictureBox2.m_StationIDList1.Count; i++)
@@ -111,39 +135,13 @@ namespace SCWPredictSystem
                 treeViewStation.Nodes[0].Nodes.Add(newNode);
             }
             treeViewStation.ExpandAll();
-            //设置站点潜势列表
-            listViewPotentialLeiBao.Items.Clear();
-            for (int i = 0; i < potential_name.Length; i++)
-            {
-                ListViewItem newItem = new ListViewItem(potential_name[i]);
-                newItem.SubItems.Add("-");
-                newItem.SubItems.Add("-");
-                newItem.SubItems.Add("-");
-                listViewPotentialLeiBao.Items.Add(newItem);
-            }
-            listViewPotentialDaFeng.Items.Clear();
-            for (int i = 0; i < potential_name.Length; i++)
-            {
-                ListViewItem newItem = new ListViewItem(potential_name[i]);
-                newItem.SubItems.Add("-");
-                newItem.SubItems.Add("-");
-                newItem.SubItems.Add("-");
-                listViewPotentialDaFeng.Items.Add(newItem);
-            }
-            listViewPotentialBinBao.Items.Clear();
-            for (int i = 0; i < potential_name.Length; i++)
-            {
-                ListViewItem newItem = new ListViewItem(potential_name[i]);
-                newItem.SubItems.Add("-");
-                newItem.SubItems.Add("-");
-                newItem.SubItems.Add("-");
-                listViewPotentialBinBao.Items.Add(newItem);
-            }
+
             //其它控件
             wParamsManagerControl1.SearchingPath = Application.StartupPath + "\\ParamsData";
             wParamsManagerControl1.SearchParams();
 
             //时间绑定
+            //强对流形式预报
             listBoxFactorMM5.SelectedIndex = 0;
             listBoxLevelMM5.SelectedIndex = 0;
             listBoxHourMM5.SelectedIndex = 0;
@@ -154,6 +152,7 @@ namespace SCWPredictSystem
             //controlDateTimePickerMM5.selectedDateTime = DateTime.Now;
             controlDateTimePickerMM5.DateTimeChanged += new EventHandler(MM5TimeFactorLevelHour_SelectedIndexChanged);
 
+            //区域分类潜势预报
             listBoxFactorArea.SelectedIndex = 0;
             listBoxHourArea.SelectedIndex = 0;
             listBoxFactorArea.SelectedIndexChanged += new EventHandler(AreaTimeFactorhOUR_SelectedIndexChanged);
@@ -161,6 +160,13 @@ namespace SCWPredictSystem
             //todo:要修改回来
             //controlDateTimePickerArea.selectedDateTime = DateTime.Now;
             controlDateTimePickerArea.DateTimeChanged += new EventHandler(AreaTimeFactorhOUR_SelectedIndexChanged);
+
+            //强对流天气指数预报
+            listBoxFactorSurf.SelectedIndex = 0;
+            listBoxHourSurf.SelectedIndex = 0;
+            listBoxFactorSurf.SelectedIndexChanged += listBoxFactorSurf_SelectedIndexChanged;
+            listBoxHourSurf.SelectedIndexChanged += listBoxFactorSurf_SelectedIndexChanged;
+            controlDateTimePickerSurf.DateTimeChanged += listBoxFactorSurf_SelectedIndexChanged;
 
             listBoxHourStation.SelectedIndex = 0;
             listBoxHourStation.SelectedValueChanged += new EventHandler(StationTimeStationHour_SelectedValueChanged);
@@ -170,9 +176,111 @@ namespace SCWPredictSystem
             treeViewStation.AfterSelect += new TreeViewEventHandler(treeViewStation_AfterSelect);
         }
 
+
+
+        void listBoxFactorSurf_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            ShowSurfData();
+        }
+
         private void MainForm_Shown(object sender, EventArgs e)
         {
-            //DataTable dt = ReadPotentialData(DateTime.Now, POTENTIAL_FACTOR.BENBAO_CONDITION_INDEX, POTENTIAL_HOUR.HR72);
+        }
+
+        /// <summary>
+        /// 显示强对流天气指数预报，12Surf
+        /// </summary>
+        public void ShowSurfData()
+        {
+            this.Cursor = Cursors.WaitCursor;
+            wLayerManagerControl3.ClearLayers();
+            string factorName = listBoxFactorSurf.SelectedItem.ToString();
+            POTENTIAL_HOUR hour = (POTENTIAL_HOUR)listBoxHourSurf.SelectedIndex;
+            string hourName = listBoxHourSurf.SelectedItem.ToString();
+            DateTime startDateTime = controlDateTimePickerSurf.selectedDateTime;
+            DateTime endDateTime = startDateTime + new TimeSpan(listBoxHourSurf.SelectedIndex * 6 + 6, 0, 0);
+            string mapTitle = string.Format("{0}({1} {2:00}H {3})",
+                                            factorName,
+                                            startDateTime.ToString("yyyyMMddHH"),
+                                            listBoxHourArea.SelectedIndex * 6 + 6,
+                                            endDateTime.ToString("yyyyMMddHH"));
+            string layerName = factorName;
+
+            ContourParams contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\强对流天气指数.cst");
+            Surf_Factor factor = Surf_Factor.CAPE;
+            switch (listBoxFactorSurf.SelectedIndex)
+            {
+                case 0:
+                    factor = Surf_Factor.CAPE;
+                    break;
+                case 1:
+                    factor = Surf_Factor.CIN; break;
+                case 2:
+                    factor = Surf_Factor.LI; break;
+                case 3:
+                    factor = Surf_Factor.SI; break;
+                case 4:
+                    factor = Surf_Factor.SSI; break;
+                case 5:
+                    factor = Surf_Factor.BRN; break;
+                case 6:
+                    factor = Surf_Factor.BRNSHR; break;
+                case 7:
+                    factor = Surf_Factor.AI; break;
+                case 8:
+                    factor = Surf_Factor.KI; break;
+                case 9:
+                    factor = Surf_Factor.SWEAT; break;
+                case 10:
+                    factor = Surf_Factor.FF75; break;
+                case 11:
+                    factor = Surf_Factor.FF52; break;
+                default:
+                    factor = Surf_Factor.CAPE; break;
+            }
+
+            //获取数据
+            double[] factorDataD = null;
+            factorDataD = ReadSurfData(startDateTime, factor, hour);
+            if (factorDataD == null || factorDataD.Length == 0)
+            {
+                MessageBox.Show("数据不存在");
+                this.Cursor = Cursors.Default;
+                return;
+            }
+            //显示数据
+            List<PointF> listPosD = new List<PointF>();
+            List<float> listValD = new List<float>();
+            string contourColorBarName = layerName + "等值颜色线";
+            if (factorDataD != null)
+            {
+                listPosD = new List<PointF>(187);
+                listValD = new List<float>(187);
+                for (int i = 0; i < 17; i++)
+                {
+                    for (int j = 0; j < 11; j++)
+                    {
+                        double valD = factorDataD[i * 11 + j];
+                        if (valD == DefaultValue)
+                            continue;
+                        listPosD.Add(new PointF((float)(m_startX + m_interval * 50 * (i + 1)), (float)(m_startY + m_interval * 50 * (j + 1))));
+                        listValD.Add((float)valD);
+                    }
+                }
+            }
+            //显示数据
+            if (listPosD != null)
+            {
+                wChinaMasker masker = new wChinaMasker();
+                wContourLayer contourLayer = new wContourLayer(layerName, true);
+                if (contourLayer.LoadData(listPosD, listValD, contourParams, true) == true)
+                {
+                    contourLayer.layerColorBarName = contourColorBarName;
+                    wLayerManagerControl3.AddLayer(contourLayer, null, 0);
+                }
+            }
+            wMapPictureBox3.MapTitle = mapTitle;
+            this.Cursor = Cursors.Default;
         }
 
 
@@ -229,6 +337,7 @@ namespace SCWPredictSystem
                                             endDateTime.ToString("yyyyMMddHH"));
             string layerTitleD = string.Format("{0}{1}", levelName, factorName);
             string layerTitleUV = string.Format("{0}{1}", levelName, factorName);
+
             //准备数据
             ContourParams contourParams = null;
             VectorParams vectorParams = null;
@@ -533,57 +642,42 @@ namespace SCWPredictSystem
             string layerName = factorName;
 
             ContourParams contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\强对流天气发生潜势.cst");
-            POTENTIAL_FACTOR factor = POTENTIAL_FACTOR.LEIBAO_SINGLE_INDEX;
+            POTENTIAL_FACTOR factor = POTENTIAL_FACTOR.BINBAO_MULTI_INDEX;
             if (listBoxFactorArea.SelectedIndex == 0)
-            {
-                factor = POTENTIAL_FACTOR.LEIBAO_SINGLE_INDEX;
-                //contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\强对流天气发生潜势.cst");
-            }
-            else if (listBoxFactorArea.SelectedIndex == 1)
             {
                 factor = POTENTIAL_FACTOR.LEIBAO_MULTI_INDEX;
                 //contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\雷暴发生潜势.cst");
             }
-            else if (listBoxFactorArea.SelectedIndex == 2)
+            else if (listBoxFactorArea.SelectedIndex == 1)
             {
                 factor = POTENTIAL_FACTOR.LEIBAO_CONDITION_INDEX;
                 //contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\雷暴发生潜势.cst");
             }
-            else if (listBoxFactorArea.SelectedIndex == 3)
-            {
-                factor = POTENTIAL_FACTOR.DAFENG_SINGLE_INDEX;
-                //contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\雷暴大风发生潜势.cst");
-            }
-            else if (listBoxFactorArea.SelectedIndex == 4)
+            else if (listBoxFactorArea.SelectedIndex == 2)
             {
                 factor = POTENTIAL_FACTOR.DAFENG_MULTI_INDEX;
                 //contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\雷暴大风发生潜势.cst");
             }
-            else if (listBoxFactorArea.SelectedIndex == 5)
+            else if (listBoxFactorArea.SelectedIndex == 3)
             {
                 factor = POTENTIAL_FACTOR.DAFENG_CONDITION_INDEX;
                 //contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\雷暴大风发生潜势.cst");
             }
-            else if (listBoxFactorArea.SelectedIndex == 6)
-            {
-                factor = POTENTIAL_FACTOR.BINBAO_SINGLE_INDEX;
-                //contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\冰雹发生潜势.cst");
-            }
-            else if (listBoxFactorArea.SelectedIndex == 7)
+            else if (listBoxFactorArea.SelectedIndex == 4)
             {
                 factor = POTENTIAL_FACTOR.BINBAO_MULTI_INDEX;
                 //contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\冰雹发生潜势.cst");
             }
-            else if (listBoxFactorArea.SelectedIndex == 8)
+            else if (listBoxFactorArea.SelectedIndex == 5)
             {
                 factor = POTENTIAL_FACTOR.BINBAO_CONDITION_INDEX;
-                //contourParams = new ContourParams(Application.StartupPath + "\\ParamsData\\冰雹发生潜势.cst");
             }
 
             DataTable dtResult = ReadPotentialData(startDateTime, factor, hour);
             if (dtResult == null || dtResult.Rows.Count == 0)
             {
                 MessageBox.Show("数据不存在");
+                this.Cursor = Cursors.Default;
                 return;
             }
 
@@ -591,20 +685,34 @@ namespace SCWPredictSystem
             List<float> listValD = new List<float>();
             for (int i = 0; i < dtResult.Rows.Count; i++)
             {
-                int stationID = (int)dtResult.Rows[i]["StationID"];
-                for (int j = 0; j < wMapPictureBox2.m_StationIDList1.Count; j++)
+                int stationID = (int)dtResult.Rows[i][0];
+
+                int value = wMapPictureBox2.m_StationIDList1.IndexOf(stationID);
+                if (value != -1)
                 {
-                    if (stationID == wMapPictureBox2.m_StationIDList1[j])
-                    {
-                        listPosD.Add(wMapPictureBox2.m_StationPositionList1[j]);
-                        listValD.Add(Convert.ToSingle(dtResult.Rows[i]["SWEAT"]));
-                    }
+                    listPosD.Add(wMapPictureBox2.m_StationPositionList1[value]);
+                    double t = (double)dtResult.Rows[i][1];
+                    float val = (float)t;
+                    listValD.Add(val);
                 }
+                //for (int j = 0; j < wMapPictureBox2.m_StationIDList1.Count; j++)
+                //{
+                //    if (stationID == wMapPictureBox2.m_StationIDList1[j])
+                //    {
+                //        listPosD.Add(wMapPictureBox2.m_StationPositionList1[j]);
+                //        float val = (float)ReadPotentialPara(startDateTime, stationID, hour, factor);
+                //        listValD.Add(val);
+                //    }
+                //}
             }
 
             wLayerManagerControl2.ClearLayers();
             wUserDefineMasker masker = new wUserDefineMasker(Application.StartupPath + "\\ParamsData\\南京军区.lin", true);
             wContourLayer contourLayer = new wContourLayer(layerName, true);
+            if (listValD.Sum() == 0)
+            {
+                listValD[0] = 0.000000001f;//防止出线Bug
+            }
             if (contourLayer.LoadData(listPosD, listValD, contourParams, true) == true)
             {
                 contourLayer.layerColorBarName = layerName;
@@ -624,18 +732,18 @@ namespace SCWPredictSystem
             int stationID = wMapPictureBox2.m_StationIDList1[(int)treeViewStation.SelectedNode.Index];
             //12个指数
             POTENTIAL_HOUR hour = (POTENTIAL_HOUR)listBoxHourStation.SelectedIndex;
-            double[] dt12Index = Read12IndexData(controlDateTimePickerStation.selectedDateTime, stationID, hour);
+            double[] dt14Index = Read14IndexData(controlDateTimePickerStation.selectedDateTime, stationID, hour);
             for (int i = 0; i < m_listViewIndex.Items.Count; i++)
             {
-                m_listViewIndex.Items[i].SubItems[1].Text = string.Format("{0:0.000}", dt12Index[i]);
+                m_listViewIndex.Items[i].SubItems[1].Text = string.Format("{0:0.000}", dt14Index[i]);
             }
             //3个分类的2个参数
-            m_listViewParas.Items[0].SubItems[1].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.BINBAO_MULTI_INDEX));
-            m_listViewParas.Items[0].SubItems[2].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.BINBAO_CONDITION_INDEX));
-            m_listViewParas.Items[1].SubItems[1].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.DAFENG_MULTI_INDEX));
-            m_listViewParas.Items[1].SubItems[2].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.DAFENG_CONDITION_INDEX));
-            m_listViewParas.Items[2].SubItems[1].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.LEIBAO_MULTI_INDEX));
-            m_listViewParas.Items[2].SubItems[2].Text = string.Format("{0:0.000}", ReadPotentialParas(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.LEIBAO_CONDITION_INDEX));
+            m_listViewParas.Items[0].SubItems[1].Text = string.Format("{0:0.000}", ReadPotentialPara(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.BINBAO_MULTI_INDEX));
+            m_listViewParas.Items[0].SubItems[2].Text = string.Format("{0:0.000}", ReadPotentialPara(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.BINBAO_CONDITION_INDEX));
+            m_listViewParas.Items[1].SubItems[1].Text = string.Format("{0:0.000}", ReadPotentialPara(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.DAFENG_MULTI_INDEX));
+            m_listViewParas.Items[1].SubItems[2].Text = string.Format("{0:0.000}", ReadPotentialPara(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.DAFENG_CONDITION_INDEX));
+            m_listViewParas.Items[2].SubItems[1].Text = string.Format("{0:0.000}", ReadPotentialPara(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.LEIBAO_MULTI_INDEX));
+            m_listViewParas.Items[2].SubItems[2].Text = string.Format("{0:0.000}", ReadPotentialPara(controlDateTimePickerStation.selectedDateTime, stationID, hour, POTENTIAL_FACTOR.LEIBAO_CONDITION_INDEX));
 
             if (treeViewStation.SelectedNode == null || treeViewStation.SelectedNode.Name != "STATION")
             {
@@ -699,7 +807,7 @@ namespace SCWPredictSystem
             wTlnPControl1.PicTitle = tlnpTitle;
             wTlnPControl1.DrawData();
 
-            //todo:风玫瑰图，还是应该添加上去,有bug
+            //todo:风玫瑰图
             wWindRoseControl1.LoadData(P, Fs, Fx);
             wWindRoseControl1.PicTitle = roseTitle;
             wWindRoseControl1.DrawData();
